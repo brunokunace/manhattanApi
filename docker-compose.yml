@@ -1,0 +1,27 @@
+# v2 syntax
+version: '2'
+
+services:
+
+  mysql-wm:
+    image: ambientum/mysql:5.7
+    container_name: mysql-wm
+    volumes:
+      - ./.docker/mysql:/var/lib/mysql
+    ports:
+      - "3390:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=wm
+      - MYSQL_DATABASE=wm
+      - MYSQL_USER=wm
+      - MYSQL_PASSWORD=wm
+
+  apache-wm:
+    image: ambientum/php:7.0-apache
+    container_name: apache-wm
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8090:8080"
+    links:
+      - mysql-wm
