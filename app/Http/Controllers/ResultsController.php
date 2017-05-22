@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ResultsController extends Controller
 {
-    public function importResults(Request $request){
+    public function import(Request $request){
         if($request->hasFile('import_file')){
             $path = $request->file('import_file')->getRealPath();
             $data = Excel::load($path, null, 'ISO-8859-1')->get();
@@ -54,18 +54,18 @@ class ResultsController extends Controller
         }
         return response()->json(['error' => 'Erro importar o arquivo'],400);
     }
-    public function showResults(){
-        if($results = Results::all()){
+    public function all(){
+        if($results = Results::orderByDesc('criacao')->get()){
             return response()->json($results,200);
         }
         return response()->json(['error' => 'Não foi possível completar a operação'],400);
     }
-    public function myResults(){
+    public function me(){
 
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
 
-        if($results = Results::where('sub_conta',$user->cod_subconta)->get()){
+        if($results = Results::where('sub_conta',$user->cod_subconta)->orderByDesc('criacao')->get()){
             return response()->json($results,200);
         }
         return response()->json(['error' => 'Não foi possível completar a operação'],400);

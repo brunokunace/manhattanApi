@@ -36,6 +36,8 @@ class CreateUsersTable extends Migration
             $table->string('telefone_fixo');
             $table->string('telefone_celular');
             $table->string('cod_subconta');
+            $table->string('level_id');
+            $table->string('ativo')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -6,8 +6,8 @@ use App\HistoricalResults;
 
 class HistoricalResultsController extends Controller
 {
-    public function historicals(){
-        $historicals = HistoricalResults::all();
+    public function all(){
+        $historicals = HistoricalResults::orderByDesc('created_at')->get();
 
         return response()->json($historicals,200);
     }

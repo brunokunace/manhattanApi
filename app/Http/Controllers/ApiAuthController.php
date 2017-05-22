@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
 use JWTAuth;
 use App\User;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -89,9 +90,11 @@ class ApiAuthController extends Controller
             'cod_subconta' => $cod_subconta,
             'level_id' => $level
         ]);
-        $token = JWTAuth::fromUser($user);
+        if(!$user){
+            return response()->json(['error' => 'Erro ao criar usuário'],400);
+        }
+        return response()->json(['success' => 'Usuário criado com sucesso'],200);
 
-        return response()->json(['token' => $token],200);
     }
     public function me()
     {
@@ -102,7 +105,7 @@ class ApiAuthController extends Controller
 
         return response()->json(['data' => $user],200);
     }
-    public function users()
+    public function all()
     {
         $users = User::all();
         foreach ($users as $user){
@@ -119,5 +122,51 @@ class ApiAuthController extends Controller
                 ->json(['success' => 'Usuario excluido com sucesso!'], 200);
         }
         return response()->json(['error' => 'Não foi possível completar a operação'],400);
+    }
+    public function update()
+    {
+        $user = User::find(request()->id);
+        $user->email = request()->email;
+        $user->name = request()->name;
+        $user->cpf = request()->cpf;
+        $user->rg = request()->rg;
+        $user->rg_emissor = request()->rg_emissor;
+        $user->rg_uf = request()->rg_uf;
+        $user->data_nascimento = request()->data_nascimento;
+        $user->sexo = request()->sexo;
+        $user->naturalidade = request()->naturalidade;
+        $user->estado_civil = request()->estado_civil;
+        $user->cep = request()->cep;
+        $user->logradouro = request()->logradouro;
+        $user->numero = request()->numero;
+        $user->bairro = request()->bairro;
+        $user->localidade = request()->localidade;
+        $user->uf = request()->uf;
+        $user->skype = request()->skype;
+        $user->telefone_fixo = request()->telefone_fixo;
+        $user->telefone_celular = request()->telefone_celular;
+        $user->cod_subconta = request()->cod_subconta;
+        $user->level_id = request()->level_id;
+        $saved = $user->save();
+        if(!$saved){
+            return response()->json(['error' => 'Erro ao editar o  usuário'],400);
+        }
+        return response()->json(['success' => 'Alterações feitas com sucesso'],200);
+
+    }
+    public function updatePassword()
+    {
+        $token = JWTAuth::getToken();
+        $user = JWTAuth::toUser($token);
+        if (Hash::check(request()->antiga, $user->password)) {
+            $user->password = Hash::make(request()->nova);
+            $user->save();
+            return response()->json(['success' => 'Alterações feitas com sucesso'],200);
+        }
+        return response()->json(['error' => 'Senha Incorreta'],400);
+
+
+
+
     }
 }
