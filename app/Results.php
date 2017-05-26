@@ -17,6 +17,8 @@ class Results extends Model
     protected $fillable = [
      'corretora', 'conta', 'titular', 'sub_conta', 'sub_titular', 'clordid', 'ativo', 'lado', 'status', 'criacao',
      'ultima_atualizacao', 'preco', 'preco_stop', 'quantidade', 'preco_medio', 'quantidade_executada', 'quantidade_restante',
-     'total', 'total_executado', 'validade', 'data_validade', 'estrategia', 'mensagem', 'historical_result_id'];
+     'total', 'total_executado', 'validade', 'data_validade', 'estrategia', 'mensagem', 'emolumento', 'corretagem', 'ganho',
+     'historical_result_id', 'rate_types_id'
+    ];
     
 }

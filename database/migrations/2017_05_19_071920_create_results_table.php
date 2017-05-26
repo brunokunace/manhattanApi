@@ -24,8 +24,8 @@ class CreateResultsTable extends Migration
             $table->string('ativo')->nullable();
             $table->string('lado')->nullable();
             $table->string('status')->nullable();
-            $table->string('criacao')->nullable();
-            $table->string('ultima_atualizacao')->nullable();
+            $table->timestamp('criacao')->nullable();
+            $table->timestamp('ultima_atualizacao')->nullable();
             $table->string('preco')->nullable();
             $table->string('preco_stop')->nullable();
             $table->string('quantidade')->nullable();
@@ -38,9 +38,16 @@ class CreateResultsTable extends Migration
             $table->string('data_validade')->nullable();
             $table->string('estrategia')->nullable();
             $table->string('mensagem')->nullable();
+            $table->string('emolumento');
+            $table->string('corretagem');
+            $table->string('ganho');
             $table->integer('historical_result_id')->unsigned();
             $table->foreign('historical_result_id')
                 ->references('id')->on('historical_results')
+                ->onDelete('cascade');
+            $table->integer('rate_types_id')->unsigned();
+            $table->foreign('rate_types_id')
+                ->references('id')->on('rate_types')
                 ->onDelete('cascade');
             $table->timestamps();
         });

@@ -32,15 +32,18 @@ Route::group( ['prefix' => 'users'],  function (){
 });
 
 // RESULTS ROUTES
-Route::group(['prefix' => 'results', 'middleware' => ['jwt.auth','laravel-acl'], 'level' => '1234567890'], function (){
+Route::group(['prefix' => 'results'], function (){
     Route::post('/import', [
         'uses' => 'ResultsController@import'
     ]);
-    Route::get('/all', [
-        'uses' => 'ResultsController@all'
+    Route::post('/porativo', [
+        'uses' => 'ResultsController@porAtivo'
     ]);
-    Route::get('/me', [
-        'uses' => 'ResultsController@me'
+    Route::post('/poracao', [
+        'uses' => 'ResultsController@porAcao'
+    ]);
+    Route::get('/subtitular', [
+        'uses' => 'ResultsController@subtitular'
     ]);
 });
 
@@ -53,3 +56,17 @@ Route::group(['prefix' => 'historical', 'middleware' => 'jwt.auth'], function ()
         'uses' => 'HistoricalResultsController@delete'
     ]);
 });
+
+// RATES TYPES ROUTES
+Route::group(['prefix' => 'ratetypes'], function (){
+    Route::get('/all', [
+        'uses' => 'RateTypesController@all'
+    ]);
+    Route::post('', [
+        'uses' => 'RateTypesController@create'
+    ]);
+    Route::put('', [
+        'uses' => 'RateTypesController@update'
+    ]);
+});
+
