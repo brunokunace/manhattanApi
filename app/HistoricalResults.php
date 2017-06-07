@@ -15,7 +15,7 @@ class HistoricalResults extends Model
      * @var array
      */
     protected $fillable = [
-        'code'
+        'code', 'filename'
     ];
     public function results(){
         return $this->hasMany(Results::class);

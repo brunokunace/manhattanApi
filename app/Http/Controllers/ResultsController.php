@@ -25,14 +25,15 @@ class ResultsController extends Controller
         }
         if($request->hasFile('importFile')){
             $path = $request->file('importFile')->getRealPath();
-//            $data = Excel::load($path, null, 'ISO-8859-1')->get();
+            $filename = $request->file('importFile')->getClientOriginalName();
             $csv = Reader::createFromPath($path);
             $csv->setDelimiter(';');
             $data = $csv->setOffset(1)->fetchAll();
 
             $code = sha1(time());
             $historical = HistoricalResults::create([
-                'code' => $code
+                'code' => $code,
+                'filename' => $filename
             ]);
             if(!empty($data)){
                 foreach ($data as $key => $value) {
@@ -56,6 +57,8 @@ class ResultsController extends Controller
                     $total_executado = moeda($value[18]);
                     $quantidade_executada = moeda($value[15]);
                     $quantidade = moeda($value[13]);
+                    $value[9] = str_pad($value[9],19,":00");
+                    $value[10] = str_pad($value[10],19,":00");
 
                     $criacao = DateTime::createFromFormat('d/m/Y H:i:s', $value[9]);
                     $criacao->format('Y-m-d H:i:s');
@@ -125,14 +128,14 @@ class ResultsController extends Controller
                     ->get();
             }
 
-            $result[$rate->initial] = $results;
-            foreach ($result[$rate->initial] as $k => $resultInitial){
+            $result[$rate->name] = $results;
+            foreach ($result[$rate->name] as $k => $resultInitial){
                 if(!$resultInitial->VolumesC > 0){
-                    unset($result[$rate->initial][$k]);
+                    unset($result[$rate->name][$k]);
                     continue;
                 }
-                $resultInitial->VolumesC = round($resultInitial->VolumesC / $resultInitial->ContratosC, 2, PHP_ROUND_HALF_UP);
-                $resultInitial->VolumesV = round($resultInitial->VolumesV / $resultInitial->ContratosV, 2, PHP_ROUND_HALF_UP);
+                $resultInitial->VolumesC = round($resultInitial->VolumesC / $resultInitial->ContratosC, 5, PHP_ROUND_HALF_UP);
+                $resultInitial->VolumesV = round($resultInitial->VolumesV / $resultInitial->ContratosV, 5, PHP_ROUND_HALF_UP);
                 $resultInitial->bruto = round(($resultInitial->VolumesV - $resultInitial->VolumesC) * $resultInitial->ContratosC * $rate->ganho, 2, PHP_ROUND_HALF_UP);
                 $resultInitial->custo = round(($resultInitial->ContratosC + $resultInitial->ContratosV) / 2 * (($rate->emolumento + $rate->corretagem) * -2), 2, PHP_ROUND_HALF_UP);
                 $resultInitial->net = round($resultInitial->bruto + $resultInitial->custo, 2, PHP_ROUND_HALF_UP);

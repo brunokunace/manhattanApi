@@ -16,6 +16,7 @@ class CreateHistoricalResultsTable extends Migration
         Schema::create('historical_results', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
+            $table->string('filename');
             $table->timestamps();
         });
     }

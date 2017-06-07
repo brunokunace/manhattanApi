@@ -13,12 +13,13 @@ class ApiAuthController extends Controller
     public function authenticate()
     {
         $credentials = request()->only('cpf', 'password');
+
         try
         {
             $token = JWTAuth::attempt($credentials);
             if(!$token){
-
-                $credentials = request()->only('email', 'password');
+                $credentials['email'] = $credentials['cpf'];
+                unset($credentials['cpf']);
                 try
                 {
                     $token = JWTAuth::attempt($credentials);
